@@ -1,0 +1,597 @@
+/**
+ * Paysafe Payment Gateway — Admin Styles (WP Dashboard)
+ * File: /assets/css/admin-style.css
+ * Styles specific to the WP Admin settings & dashboard UI for the gateway
+ * Version: 1.0.4
+ * Last updated: 2025-11-13
+ *
+ * Unit policy:
+ * - Keep px for hairline borders/lines (1–2px)
+ * - Use rem for spacing, motion offsets, and shadow radii (scales with root size)
+ * - Keep em for icon/logo sizes relative to text (when used)
+ */
+
+/* ===================================
+   WooCommerce Settings Page Styles
+   =================================== */
+
+/* Compact spacing for admin settings */
+.woocommerce table.form-table[class*="woocommerce_paysafe"] .form-table,
+.woocommerce_paysafe_settings .form-table {
+	margin-top: 0;
+}
+
+.woocommerce_paysafe_settings .form-table tr {
+	padding: 0;
+}
+
+.woocommerce_paysafe_settings .form-table th {
+	padding: 0.625rem 0.625rem 0.625rem 0;
+	width: 200px;
+}
+
+.woocommerce_paysafe_settings .form-table td {
+	padding: 0.5rem 0.625rem;
+}
+
+.woocommerce_paysafe_settings .form-table td .description {
+	margin: 0.25rem 0 0 0;
+}
+
+.woocommerce_paysafe_settings h2,
+.woocommerce_paysafe_settings h3 {
+	margin: 0.9375rem 0 0.5rem 0;
+	padding: 0;
+}
+
+/* Reduce spacing between field groups */
+.woocommerce_paysafe_settings .form-table + h3 {
+	margin-top: 1.25rem;
+}
+
+/* Compact the section titles */
+.woocommerce table.form-table tr[valign="top"] td h3 {
+	margin: 0.625rem 0 0.3125rem 0;
+}
+
+/* ===================================
+   Account ID Management Styles
+   =================================== */
+
+.paysafe-account-ids {
+	margin: 0.625rem 0;
+}
+
+.paysafe-account-id-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+	padding: 0.5rem;
+	background: #f5f5f5;
+	border: 1px solid #ddd;
+	border-radius: 0.1875rem;
+	transition: background-color 0.2s ease;
+}
+
+.paysafe-account-id-item:hover {
+	background: #ececec;
+}
+
+.paysafe-account-id-item .currency {
+	font-weight: bold;
+	margin-right: 0.625rem;
+	min-width: 40px;
+	color: #23282d;
+}
+
+.paysafe-account-id-item .account-id {
+	flex: 1;
+	margin-right: 0.625rem;
+	font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+	font-size: 0.8125rem;
+	color: #0073aa;
+}
+
+.paysafe-account-id-item .remove-account {
+	color: #a00;
+	text-decoration: none;
+	font-weight: bold;
+	transition: color 0.2s ease;
+}
+
+.paysafe-account-id-item .remove-account:hover {
+	color: #f00;
+}
+
+.paysafe-add-account {
+	margin-top: 0.625rem;
+}
+
+.paysafe-add-account select,
+.paysafe-add-account input {
+	margin-right: 0.625rem;
+}
+
+/* ===================================
+   Credential Validation Styles
+   =================================== */
+
+.paysafe-validate-credentials {
+	margin-left: 0.625rem;
+}
+
+.paysafe-validation-result {
+	display: inline-block;
+	margin-left: 0.625rem;
+	padding: 0.1875rem 0.5rem;
+	border-radius: 0.1875rem;
+	font-weight: bold;
+	font-size: 0.75rem;
+	transition: all 0.3s ease;
+}
+
+.paysafe-validation-result.valid {
+	color: #fff;
+	background: #46b450;
+}
+
+.paysafe-validation-result.invalid {
+	color: #fff;
+	background: #dc3232;
+}
+
+.paysafe-validation-result.validating {
+	color: #fff;
+	background: #ffb900;
+}
+
+/* Save reminder animation */
+@keyframes paysafe-save-reminder {
+	0% { background-color: transparent; }
+	50% { background-color: #ffeb3b; }
+	100% { background-color: transparent; }
+}
+
+.paysafe-save-reminder {
+	animation: paysafe-save-reminder 2s ease-in-out infinite;
+}
+
+/* ===================================
+   Public Key Field Styles
+   =================================== */
+
+.paysafe-public-key-wrapper {
+	position: relative;
+}
+
+.paysafe-copy-public-key {
+	position: absolute;
+	right: 0.3125rem;
+	top: 0.3125rem;
+}
+
+/* ===================================
+   Form Field Optimization
+   =================================== */
+
+/* Reduce white space in descriptions */
+.woocommerce_paysafe_settings p.description {
+	margin: 0.1875rem 0 0 0;
+	line-height: 1.4;
+	font-size: 0.8125rem;
+	color: #666;
+}
+
+/* Compact input fields */
+.woocommerce_paysafe_settings input[type="text"],
+.woocommerce_paysafe_settings input[type="password"],
+.woocommerce_paysafe_settings input[type="email"],
+.woocommerce_paysafe_settings textarea,
+.woocommerce_paysafe_settings select {
+	margin: 0;
+}
+
+/* Reduce checkbox spacing */
+.woocommerce_paysafe_settings input[type="checkbox"] {
+	margin: 0 0.3125rem 0 0;
+}
+
+/* Tighten fieldset spacing */
+.woocommerce_paysafe_settings fieldset {
+	margin: 0;
+	padding: 0;
+}
+
+.woocommerce_paysafe_settings fieldset label {
+	margin: 0;
+}
+
+/* ===================================
+   Paysafe Admin Dashboard Styles
+   =================================== */
+
+.paysafe-admin-wrap {
+	max-width: 1200px;
+}
+
+.paysafe-dashboard {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.paysafe-widget {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 0.25rem;
+	padding: 1.25rem;
+	box-shadow: 0 0.0625rem 0.0625rem rgba(0,0,0,0.04);
+}
+
+.paysafe-widget h2 {
+	margin-top: 0;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: #23282d;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 0.625rem;
+}
+
+.paysafe-widget-full {
+	grid-column: 1 / -1;
+}
+
+/* Status indicators */
+.paysafe-status {
+	display: flex;
+	align-items: center;
+	gap: 0.625rem;
+	font-size: 1rem;
+	margin: 0.9375rem 0;
+}
+
+.status-indicator {
+	width: 0.75rem;
+	height: 0.75rem;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.status-indicator.status-active {
+	background: #46b450;
+	animation: pulse 2s infinite;
+}
+
+.status-indicator.status-inactive {
+	background: #dc3232;
+}
+
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(70, 180, 80, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 0 0.625rem rgba(70, 180, 80, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(70, 180, 80, 0);
+	}
+}
+
+/* Info table */
+.paysafe-info-table {
+	width: 100%;
+	margin-top: 0.9375rem;
+}
+
+.paysafe-info-table td {
+	padding: 0.5rem 0;
+	border-bottom: 1px solid #f1f1f1;
+}
+
+.paysafe-info-table td:first-child {
+	font-weight: 600;
+	color: #666;
+	width: 40%;
+}
+
+/* Statistics */
+.paysafe-stats {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.9375rem;
+	margin-top: 0.9375rem;
+}
+
+.stat-item {
+	text-align: center;
+	padding: 0.9375rem;
+	background: #f8f9fa;
+	border-radius: 0.25rem;
+}
+
+.stat-value {
+	display: block;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #0073aa;
+	margin-bottom: 0.3125rem;
+}
+
+.stat-label {
+	display: block;
+	font-size: 0.75rem;
+	color: #666;
+	text-transform: uppercase;
+}
+
+/* Badges */
+.badge {
+	display: inline-block;
+	padding: 0.1875rem 0.5rem;
+	border-radius: 0.1875rem;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.badge-success {
+	background: #d4edda;
+	color: #155724;
+}
+
+.badge-warning {
+	background: #fff3cd;
+	color: #856404;
+}
+
+.badge-error {
+	background: #f8d7da;
+	color: #721c24;
+}
+
+/* ===================================
+   Tools Page Styles
+   =================================== */
+
+.paysafe-tools {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.paysafe-tools .card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 0.25rem;
+	padding: 1.25rem;
+}
+
+.paysafe-tools .card h2 {
+	margin-top: 0;
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.paysafe-tools .card p {
+	color: #666;
+	margin: 0.625rem 0 0.9375rem;
+}
+
+/* ===================================
+   Logs Page Styles
+   =================================== */
+
+.paysafe-logs {
+	background: #23282d;
+	color: #0f0;
+	padding: 1.25rem;
+	border-radius: 0.25rem;
+	font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+	font-size: 0.75rem;
+	line-height: 1.6;
+	max-height: 600px; /* layout cap: keep px */
+	overflow-y: auto;
+}
+
+.paysafe-logs pre {
+	margin: 0;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	word-wrap: break-word; /* legacy alias */
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+
+@media screen and (max-width: 782px) {
+	.paysafe-dashboard {
+		grid-template-columns: 1fr;
+	}
+	
+	.paysafe-stats {
+		grid-template-columns: 1fr;
+	}
+	
+	.woocommerce_paysafe_settings .form-table th {
+		width: auto;
+		padding-bottom: 0.3125rem;
+	}
+	
+	.paysafe-account-id-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.paysafe-account-id-item .currency,
+	.paysafe-account-id-item .account-id {
+		margin-bottom: 0.3125rem;
+	}
+}
+
+/* ===================================
+   Notice & Alert Styles
+   =================================== */
+
+.paysafe-notice {
+	padding: 0.75rem;
+	margin: 0.625rem 0;
+	border-left: 0.25rem solid;
+	background: #fff;
+}
+
+.paysafe-notice.notice-info {
+	border-left-color: #00a0d2;
+	background-color: #e5f5fa;
+}
+
+.paysafe-notice.notice-success {
+	border-left-color: #46b450;
+	background-color: #ecf7ed;
+}
+
+.paysafe-notice.notice-warning {
+	border-left-color: #ffb900;
+	background-color: #fff8e5;
+}
+
+.paysafe-notice.notice-error {
+	border-left-color: #dc3232;
+	background-color: #fbeaea;
+}
+
+/* ===================================
+   Button Styles
+   =================================== */
+
+.paysafe-button {
+	display: inline-block;
+	padding: 0.375rem 0.75rem;
+	background: #0073aa;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 0.1875rem;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.paysafe-button:hover {
+	background: #005a87;
+	color: #fff;
+}
+
+.paysafe-button.button-secondary {
+	background: #555;
+}
+
+.paysafe-button.button-secondary:hover {
+	background: #333;
+}
+
+.paysafe-button.button-danger {
+	background: #dc3232;
+}
+
+.paysafe-button.button-danger:hover {
+	background: #a00;
+}
+
+/* ===================================
+   Loading States
+   =================================== */
+
+.paysafe-loading {
+	display: inline-block;
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid #f3f3f3; /* hairline */
+	border-top: 2px solid #0073aa; /* hairline */
+	border-radius: 50%;
+	animation: paysafe-spin 1s linear infinite;
+	margin-left: 0.625rem;
+	vertical-align: middle;
+	/* ensure smoothness on some engines */
+	will-change: transform;
+}
+
+@keyframes paysafe-spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+/* ===================================
+   Tooltip Styles
+   =================================== */
+
+.paysafe-tooltip {
+	position: relative;
+	display: inline-block;
+	cursor: help;
+}
+
+.paysafe-tooltip .paysafe-tooltiptext {
+	visibility: hidden;
+	width: 200px;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 0.1875rem;
+	padding: 0.3125rem 0.625rem;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -100px; /* ties to width: keep px */
+	opacity: 0;
+	transition: opacity 0.3s;
+	font-size: 0.75rem;
+}
+
+.paysafe-tooltip:hover .paysafe-tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}
+
+/* ===================================
+   Settings Link Highlight
+   =================================== */
+
+.paysafe-settings-highlight {
+	background: #ffeb3b;
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.125rem;
+	animation: paysafe-highlight-fade 3s ease-out;
+}
+
+@keyframes paysafe-highlight-fade {
+	0% { background: #ffeb3b; }
+	100% { background: transparent; }
+}
+
+/* Custom Error Messages Section */
+.woocommerce_page_wc-settings #error_messages_settings + table textarea {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	line-height: 1.6;
+}
+
+.woocommerce_page_wc-settings #error_messages_settings + table .description {
+	font-size: 12px;
+	color: #666;
+	font-style: italic;
+	display: block;
+	margin-top: 5px;
+}
+
+.woocommerce_page_wc-settings #error_messages_settings {
+	border-top: 3px solid #1E4270;
+	padding-top: 15px;
+	margin-top: 30px;
+}
+
+.woocommerce_page_wc-settings #error_messages_settings h2 {
+	color: #1E4270;
+}

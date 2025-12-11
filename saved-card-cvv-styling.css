@@ -1,0 +1,64 @@
+/**
+ * Paysafe Payment Form CSS Saved Card Syling
+ * File: /assets/css/saved-card-cvv-styling.css
+ * Styles specific to the payment form fields UI
+ * Compatible with Paysafe JS Hosted Fields (iframe)
+ * Version: 1.0.4 - With PCI Compliant Tokenization
+ * Last updated: 2025-11-15
+ */
+ 
+/* ═══════════════════════════════════════════════════════════════════════
+   SAVED CARD CVV FIELD STATE STYLING
+   Add blue/red ring styling to saved card CVV inputs like regular fields
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Neutral state - subtle border */
+.paysafe-saved-card-cvv input {
+	border: 1px solid #cbd5e0 !important;
+	box-shadow: none !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Hover state - slightly darker border */
+.paysafe-saved-card-cvv input:hover {
+	border-color: #a0aec0 !important;
+}
+
+/* Focus state - blue ring */
+.paysafe-saved-card-cvv input:focus,
+.paysafe-saved-card-cvv input.psf-focus {
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+	outline: none !important;
+	z-index: 5 !important;
+}
+
+/* Error state - red ring (matches billing field styling) */
+.paysafe-saved-card-cvv input.psf-invalid,
+.paysafe-saved-card-cvv input.error,
+.paysafe-saved-card-cvv input.paysafe-input-error {
+	border-color: #ff4d4f !important;
+	box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.55),
+	            0 0 6px rgba(255, 77, 79, 0.65) !important;
+	z-index: 5 !important;
+}
+
+/* Valid state - subtle green tint (optional) */
+.paysafe-saved-card-cvv input.psf-valid {
+	border: 1px solid #48bb78 !important;
+	box-shadow: 0 0 0 1px #48bb78 !important;
+}
+
+/* Ensure parent container doesn't interfere with ring */
+.paysafe-saved-card-cvv {
+	position: relative !important;
+	z-index: 1 !important;
+}
+
+/* When input is focused or has error, bring parent container forward */
+.paysafe-saved-card-cvv:has(input:focus),
+.paysafe-saved-card-cvv:has(input.psf-focus),
+.paysafe-saved-card-cvv:has(input.psf-invalid),
+.paysafe-saved-card-cvv:has(input.error) {
+	z-index: 5 !important;
+}

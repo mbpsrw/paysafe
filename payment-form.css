@@ -1,0 +1,1817 @@
+/**
+ * Paysafe Payment Form CSS
+ * File: /assets/css/payment-form.css
+ * Styles specific to the payment form UI
+ * Compatible with Paysafe JS Hosted Fields (iframe)
+ * Version: 1.0.4 - With PCI Compliant Tokenization
+ * Last updated: 2025-12-04
+ */
+
+/* Reset and base wrapper */
+.paysafe-payment-wrapper {
+	max-width: 100%;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	box-sizing: border-box;
+	background: transparent !important;
+	--psf-left-inset: 0.5rem; /* single source of truth for left padding */
+	--psf-lock-size: 2rem; /* lock icon size */
+	--psf-card-size: 2.5rem; /* card brand icon size */
+}
+
+.paysafe-payment-wrapper *,
+.paysafe-payment-wrapper *::before,
+.paysafe-payment-wrapper *::after {
+	box-sizing: border-box;
+}
+
+/* Universal error class for invalid fields (billing, card, saved CVV) */
+.paysafe-input-error,
+input.paysafe-input-error,
+select.paysafe-input-error,
+textarea.paysafe-input-error,
+.paysafe-saved-card-cvv-input.paysafe-input-error {
+	border-color: #ff4d4f !important;
+	box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.55),
+				 0 0 6px rgba(255, 77, 79, 0.65) !important;
+}
+
+/* WooCommerce payment method description paragraph */
+.payment_method_paysafe .payment_box > p:first-child,
+.payment_box.payment_method_paysafe > p:first-child {
+	margin: 0 0 0.125rem 0 !important;
+	padding: 0 !important;
+}
+
+/* WooCommerce payment_box override - remove dark background */
+.woocommerce-checkout #payment div.payment_box,
+.payment_method_paysafe .payment_box {
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	box-shadow: none !important;
+}
+
+/* WooCommerce payment method container override */
+.payment_method_paysafe {
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+}
+
+/* Only hide billing section if specifically marked */
+.paysafe-form-section.paysafe-billing-section {
+	display: none;
+}
+
+/* Override WooCommerce payment method card logos spacing */
+.payment_method_paysafe .paysafe-card-logos {
+	gap: 0 !important;
+	justify-content: flex-start !important; /* Ensure no space distribution */
+}
+
+/* Payment section - the actual form container */
+.paysafe-payment-section {
+	background: #E2E2F0 !important;
+	border: 1px solid #CBD5E0 !important;
+	border-radius: 0.5rem;
+	padding: 1rem !important;
+	margin: 1rem !important;
+	display: block;
+	width: calc(100% - 2rem) !important;
+	box-sizing: border-box;
+}
+
+/* Fix duplicate save card checkbox - hide the one outside payment section */
+.paysafe-save-card-wc {
+	display: none !important;
+}
+
+/* Ensure the save card inside payment section shows */
+.paysafe-payment-section .paysafe-save-card {
+	display: block !important;
+}
+
+/* Ensure digital wallets section has white background */
+.paysafe-digital-wallets {
+	background: white !important;
+	padding: 1rem !important;
+	margin: -1.25rem !important; /* Negative margin to extend to edges */
+	margin-top: -1rem !important;
+	margin-bottom: 0 !important;
+	border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+/* Card header with logos */
+.paysafe-card-header {
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: center;
+	margin-bottom: 0.65rem !important;
+	padding-bottom: 0 !important;
+	gap: 0.125em; /* Gap between icon and title */
+	line-height: 1;
+	width: 100%;
+}
+
+/* Blue dot icon */
+.paysafe-card-icon {
+	width: 1.25em;
+	height: 1.25em;
+	background: white;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	flex-shrink: 0;
+}
+
+.paysafe-card-icon::before {
+	content: "";
+	width: 0.75em;
+	height: 0.75em;
+	background: #3182EC;
+	border-radius: 50%;
+	position: absolute;
+}
+
+/* Credit card text */
+.paysafe-card-title {
+	font-size: 1em;
+	font-weight: 500;
+	color: #1a202c !important;
+	margin: 0 !important;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	line-height: 1;
+	white-space: nowrap;
+	margin-right: 0.5em !important;
+}
+
+/* Card logos container - ensure horizontal layout */
+.paysafe-card-logos {
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: center;
+	gap: 0.025em;
+	flex-wrap: nowrap;
+	min-height: var(--psf-logo-h, 2em); /* follows row-scoped logo sizing; prevents clipping >2em */
+}
+
+/* Card logo images – keep visual behaviors only; sizing is row-scoped below */
+.paysafe-card-logos img,
+.paysafe-card-logos svg,
+.paysafe-card-logo {
+	width: auto !important;
+	max-width: 3.2em;
+	opacity: 0.9;
+	transition: opacity 0.2s ease;
+	display: inline-block !important;
+	vertical-align: middle !important;
+	flex-shrink: 0;
+	object-fit: contain;
+}
+
+/* Active/inactive card states */
+.paysafe-card-logos img.active,
+.paysafe-card-logos svg.active {
+	opacity: 1;
+}
+
+.paysafe-card-logos img.inactive,
+.paysafe-card-logos svg.inactive {
+	opacity: 0.3;
+}
+
+/* Form fields container */
+.paysafe-iframe-containers {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	width: 100%;
+	padding-top: 0;
+}
+
+/* Card number field with icon */
+.paysafe-card-number-wrapper {
+	position: relative;
+	width: 100%;
+	margin-bottom: 0.4rem;
+}
+
+/* Two column layout for expiry and CVV */
+.paysafe-form-row-cards {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+	width: 100%;
+	margin-bottom: 0.4rem;
+}
+
+/* Input field wrapper */
+.paysafe-iframe-field-wrapper {
+	width: 100%;
+	position: relative;
+}
+
+/* Remove any unwanted last-child margins */
+.paysafe-iframe-containers > .paysafe-iframe-field-wrapper:last-child {
+	margin-bottom: 0;
+}
+
+/* Input field container - remove thick borders */
+.paysafe-iframe-field {
+	background: white !important;
+	border: 1px solid #d9d9d9 !important;
+	border-radius: 0.3125rem;
+	padding: 0.75rem 1rem;
+	/* Ensure a minimum left inset everywhere, even if the CSS var is missing */
+	padding-left: var(--psf-left-inset, 0.5rem) !important;
+	/* Drive height from JS via --psf-field-height to match Name field exactly */
+	min-height: var(--psf-field-height, 2.875rem) !important;
+	height: var(--psf-field-height, 2.875rem) !important;
+	transition: border-color 0.2s ease;
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* Apply the same box model to the actual Paysafe mount nodes
+   even if they don't have .paysafe-iframe-field on them */
+#cardNumber_container,
+#cardExpiry_container,
+#cardCvv_container {
+  background: white !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 0.3125rem;
+  padding: 0.75rem 1rem;                 /* base */
+  /* Fallback to 0.5rem so left padding never disappears */
+  padding-left: var(--psf-left-inset, 0.5rem) !important; /* ← exact match to Name on card */
+  min-height: var(--psf-field-height, 2.875rem) !important;
+  height: var(--psf-field-height, 2.875rem) !important;
+  transition: border-color 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#cardNumber_container:hover,
+#cardExpiry_container:hover,
+#cardCvv_container:hover {
+  border: 1px solid #999 !important;
+}
+
+/* Mirror focus + error states that JS toggles via .psf-* */
+#cardNumber_container.psf-focus,
+#cardExpiry_container.psf-focus,
+#cardCvv_container.psf-focus {
+  border: 1px solid #4299e1 !important;
+  box-shadow: 0 0 0 1px #4299e1 !important;
+}
+#cardNumber_container.psf-invalid,
+#cardExpiry_container.psf-invalid,
+#cardCvv_container.psf-invalid {
+  border: 1px solid #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+#cardNumber_container.error,
+#cardExpiry_container.error,
+#cardCvv_container.error {
+  border: 1px solid #dc2626 !important;
+}
+
+/* Ensure the hosted iframe respects our height and fills the padded content box */
+#cardNumber_container iframe,
+#cardExpiry_container iframe,
+#cardCvv_container iframe {
+  display: block;
+  width: 100% !important;
+  height: var(--psf-line-height, 1.375rem);
+  min-height: var(--psf-line-height, 1.375rem);
+  background: transparent;
+  border: 0;
+}
+
+/* Show non-interactive placeholder text when hosted fields are disconnected (SAQ-A Only). */
+#cardNumber_container.psf-disconnected::before,
+#cardExpiry_container.psf-disconnected::before,
+#cardCvv_container.psf-disconnected::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  left: var(--psf-left-inset, 0.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  height: var(--psf-line-height, 1.375rem);
+  line-height: var(--psf-line-height, 1.375rem);
+  font: inherit;
+  color: #8C98AA;
+  opacity: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Prevent overlap with right-side icons (brand/lock/CVV). */
+#cardNumber_container.psf-disconnected::before { right: var(--psf-cardnumber-right, 3.125rem); }
+#cardCvv_container.psf-disconnected::before    { right: var(--psf-cvv-right, 2.5rem); }
+#cardExpiry_container.psf-disconnected::before { right: 0.75rem; } /* conservative default for expiry */
+
+/* Make the native "Name on card" start at the same x-position as hosted fields */
+#cardholder_name {
+  /* Guarantee minimum left padding even if the var isn't set yet */
+  padding-left: var(--psf-left-inset, 0.5rem) !important;
+}
+
+/* Remove any parent element borders/shadows */
+.paysafe-iframe-field * {
+	border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.paysafe-iframe-field:hover {
+	border: 1px solid #999 !important;
+}
+
+.paysafe-iframe-field:focus-within {
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+}
+
+/* Hosted iframes don't trigger :focus-within across frame boundaries.
+   JS adds .psf-focus/.psf-invalid on the container; mirror the visuals here
+   so the hosted fields get the same blue border as the "Name on card" input. */
+.paysafe-iframe-field.psf-focus {
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+}
+
+/* Mirror error state emitted by JS (and by your validation) */
+.paysafe-iframe-field.psf-invalid {
+	border: 1px solid #dc2626 !important;
+	box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/* Error state */
+.paysafe-iframe-field.error {
+	border: 1px solid #dc2626 !important;
+}
+
+.paysafe-iframe-field.error:focus-within {
+	border: 1px solid #dc2626 !important;
+	box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/* Hide labels visually but keep for screen readers */
+.paysafe-iframe-containers label,
+.paysafe-payment-wrapper .screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%); /* modern complement to rect() for robust sr-only */
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Input styling */
+.paysafe-iframe-field input {
+	width: 100%;
+	border: none !important;
+	outline: none !important;
+	font-size: 1em;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	color: #333;
+	background: transparent;
+	padding: 0;
+	margin: 0;
+	height: var(--psf-line-height, 1.375rem);
+	line-height: var(--psf-line-height, 1.375rem);
+	box-sizing: border-box;
+	box-shadow: none !important;
+}
+
+/* When hosted fields inject iframes, make them behave like the fallback <input> */
+.paysafe-iframe-field iframe {
+	display: block;
+	width: 100% !important;
+	height: var(--psf-line-height, 1.375rem);           /* matches Name field */
+	min-height: var(--psf-line-height, 1.375rem);       /* prevents vertical jitter */
+	background: transparent;   /* keep container's background/borders authoritative */
+	border: 0;
+}
+
+.paysafe-iframe-field input::placeholder {
+  /* Match non-hosted placeholder colour exactly */
+  color: #8C98AA;
+  opacity: 1;
+}
+/* Cross-engine parity for legacy Blink/WebKit/EdgeHTML */
+.paysafe-iframe-field input::-webkit-input-placeholder { color: #8C98AA; opacity: 1; }
+.paysafe-iframe-field input:-ms-input-placeholder      { color: #8C98AA; opacity: 1; }
+.paysafe-iframe-field input::-ms-input-placeholder     { color: #8C98AA; opacity: 1; }
+
+/* Card number field with icon */
+.paysafe-card-number-wrapper .paysafe-iframe-field {
+	padding-right: var(--psf-cardnumber-right, 3.125rem); /* JS measures card icon width */
+}
+
+/* Card type icon */
+.paysafe-card-type-icon {
+	position: absolute;
+	right: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: auto;
+	height: var(--psf-card-size) !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.paysafe-card-type-icon img {
+	max-width: 100%;
+	max-height: 100%;
+	height: var(--psf-card-size) !important;
+	width: auto;
+}
+
+/* Default lock icon - Make it smaller than card icon */
+.paysafe-lock-icon {
+	position: absolute;
+	right: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	width: var(--psf-lock-size) !important;
+	height: var(--psf-lock-size) !important;
+	color: #999;
+	pointer-events: none;
+	z-index: 1;
+}
+
+/* Ensure lock icon SVG scales properly */
+.paysafe-lock-icon svg { width: 100% !important; height: 100% !important; }
+
+/* Security code help icon */
+.paysafe-cvv-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.paysafe-cvv-wrapper .paysafe-iframe-field {
+	padding-right: var(--psf-cvv-right, 2.5rem); /* JS measures "?" width */
+}
+
+.paysafe-cvv-wrapper .paysafe-help-icon,
+.paysafe-iframe-field-wrapper .paysafe-help-icon {
+	position: absolute !important;
+	right: 1.375rem !important; /* Align center with lock icon (lock is 2rem wide at right: 1rem) */
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+	width: 1.25em;
+	height: 1.25em;
+	background: #4A5568 !important;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #E2E8F0 !important;
+	font-size: 1em;
+	font-weight: 600;
+	cursor: help;
+	transition: background-color 0.3s ease !important;
+	z-index: 1;
+}
+
+/* Target the tooltip more specifically and reset the parent's font-size effect */
+.paysafe-payment-wrapper .paysafe-cvv-wrapper .paysafe-help-icon::after,
+.paysafe-iframe-field-wrapper .paysafe-help-icon::after,
+.paysafe-cvv-wrapper .paysafe-help-icon::after {
+	font-size: 0.8rem !important;
+	line-height: 1.5 !important;
+}
+
+/* Alternative: If there's a dynamically created tooltip, target it */
+.paysafe-help-icon .paysafe-tooltip {
+	font: 600 0.8rem/1.5 Arial, Helvetica, sans-serif !important; /* unified font, size, weight */
+}
+
+.paysafe-help-icon:hover {
+	background: #bfbfbf !important; /* Match saved card section */
+	color: #333 !important; /* Match saved card section */
+}
+
+/* Name on card field (visual) */
+.paysafe-name-field {
+	background: white !important;
+	/* Neutral "connected" ring to match hosted fields */
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+	border-radius: 0.3125rem;
+	padding: 0.75rem 1rem;
+	/* Keep Name field aligned with hosted fields at all times */
+	padding-left: var(--psf-left-inset, 0.5rem) !important;
+	width: 100%;
+	font-size: 1em;
+	font-family: inherit;
+	transition: border-color 0.2s ease;
+	/* keep Name field and hosted fields in perfect parity */
+	min-height: var(--psf-field-height, 2.875rem);
+	margin: 0 0 0.6rem 0 !important; /* bottom spacing only */
+	outline: none !important;
+}
+
+/* Hover: match hosted fields (blue ring), no red */
+.paysafe-name-field:hover {
+	/* keep hover parity with connected state thickness */
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+	z-index: 5;
+}
+
+.paysafe-name-field:focus {
+	outline: none !important;
+	/* Selected ring must be darker & thicker (same as hosted fields focus) */
+	border: 1px solid #1E4270 !important;
+	box-shadow: 0 0 0 0.125rem #1E4270 !important;
+	z-index: 5; /* visual prominence on focus (parity with hosted fields) */
+}
+
+/* Never show red on Name-on-card (visual parity w/ hosted fields) */
+.paysafe-name-field.error,
+.paysafe-name-field.psf-invalid {
+	border: 1px solid #4299e1 !important;
+	box-shadow: 0 0 0 1px #4299e1 !important;
+}
+
+.paysafe-name-field::placeholder {
+  /* Lock to #8C98AA so theme overrides can't drift it */
+  color: #8C98AA;
+  opacity: 1;
+}
+/* Cross-engine parity */
+.paysafe-name-field::-webkit-input-placeholder { color: #8C98AA; opacity: 1; }
+.paysafe-name-field:-ms-input-placeholder      { color: #8C98AA; opacity: 1; }
+.paysafe-name-field::-ms-input-placeholder     { color: #8C98AA; opacity: 1; }
+
+/* Remove number input spinners */
+.paysafe-iframe-field input::-webkit-outer-spin-button,
+.paysafe-iframe-field input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.paysafe-iframe-field input[type=number] {
+	-moz-appearance: textfield;
+}
+
+/* Error message styling (match JS selectors) */
+.payment_method_paysafe #paysafe-errors,
+.payment_method_paysafe .paysafe-inline-error,
+.payment_method_paysafe .paysafe-errors {
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 0.3125rem;
+	padding: 0.75rem 1rem;
+	margin-top: 1rem;
+	color: #dc2626;
+	font-size: 0.875em;
+	animation: slideDown 0.3s ease;
+}
+
+/* Field-level error messages inserted by JS near specific inputs */
+.payment_method_paysafe .paysafe-field-error-message,
+.payment_method_paysafe #paysafe-connectivity-error {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-0.625rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Hide debug result */
+.paysafe-debug-result {
+	display: none !important;
+}
+
+/* Remove default form styling */
+#paysafe-payment-form {
+	margin: 0;
+	padding: 0;
+}
+
+/* Hide submit button - form will be submitted via checkout button */
+.paysafe-form-submit {
+	display: none;
+}
+
+/* Save card checkbox */
+.paysafe-save-card {
+	margin-top: 0.5rem;
+	margin-bottom: 0.25rem;
+	padding-top: 0;
+	display: block !important;
+}
+
+.paysafe-save-card label {
+	display: flex !important;
+	align-items: center;
+	gap: 0.5em;
+	font-size: 0.875em;
+	color: #2d3748;
+	cursor: pointer;
+	position: static !important;
+	width: auto !important;
+	height: auto !important;
+	clip: auto !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	overflow: visible !important;
+}
+
+.paysafe-save-card input[type="checkbox"] {
+	width: 1.125em;
+	height: 1.125em;
+	margin: 0;
+	cursor: pointer;
+	accent-color: #4299e1;
+}
+
+.paysafe-divider {
+	text-align: center;
+	margin: 0.5rem 0 !important;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 1em !important;
+}
+
+.paysafe-divider::before,
+.paysafe-divider::after {
+	content: '';
+	flex: 1;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.15), transparent);
+}
+
+.paysafe-divider::before {
+	margin-right: 1rem;
+}
+
+.paysafe-divider::after {
+	margin-left: 1rem;
+}
+
+.paysafe-divider span {
+	background: rgba(255, 255, 255, 0.6);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	padding: 0.375em 1.25em;
+	position: absolute;
+	color: #475569;
+	font-size: 0.75em;
+	font-weight: 600;
+	letter-spacing: 0.075em;
+	text-transform: uppercase;
+	border-radius: 2em;
+	box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.07);
+	line-height: 1;  /* Add this to ensure text is properly centered */
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);  /* Centers both horizontally and vertically */
+}
+
+.paysafe-wallet-buttons {
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+	margin-top: 1.25rem;
+}
+
+.paysafe-apple-pay-button,
+.paysafe-google-pay-button {
+	height: auto;
+	padding: 0.5rem;
+	border: none;
+	border-radius: 0.5rem;
+	background: transparent;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.paysafe-apple-pay-button {
+	background: #000;
+	border: 1px solid #000;
+	padding: 0 1.5rem;
+	height: 3rem;
+}
+
+.paysafe-apple-pay-button:hover {
+	background: #333;
+	border-color: #333;
+}
+
+.paysafe-google-pay-button {
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	outline: none !important;
+	box-shadow: none !important;
+	position: relative;
+}
+
+.paysafe-google-pay-button:hover img {
+	filter: drop-shadow(0 0 0.75rem #E2E2FC) drop-shadow(0 0 1.5rem rgba(226, 226, 252, 0.6));
+}
+
+.paysafe-google-pay-button:active {
+	transform: scale(0.95);
+}
+
+.paysafe-google-pay-button:active img {
+	filter: drop-shadow(0 0 0.5rem #C4C4FF) drop-shadow(0 0 1rem rgba(196, 196, 255, 0.7));
+}
+
+.paysafe-apple-pay-button img,
+.paysafe-apple-pay-button svg {
+	height: 2.25em !important;
+	width: auto !important;
+	display: block !important;
+	margin-top: 0.5em !important;
+	margin-bottom: 0.75em !important;
+	transition: filter 0.3s ease;
+}
+
+.paysafe-google-pay-button img,
+.paysafe-google-pay-button svg {
+	height: 2.25em !important;
+	width: auto !important;
+	display: block !important;
+	margin-top: 0.5em !important;
+	margin-bottom: 0.75em !important;
+	transition: filter 0.3s ease;
+}
+
+/* WooCommerce payment method label styling */
+.wc_payment_method.payment_method_paysafe > label {
+	display: flex !important;
+	align-items: center;
+	gap: 0.5em !important;
+}
+
+/* Target the payment method title and icons if they're in the label */
+.payment_method_paysafe label[for="payment_method_paysafe"] {
+	display: flex !important;
+	align-items: center;
+}
+
+/* Override inline styles on images in the WooCommerce label */
+.payment_method_paysafe label img,
+.payment_method_paysafe label svg {
+	margin: 0 !important;
+}
+
+/* Row #1 (WC label): drive height via a row-scoped var and override inline heights */
+.wc_payment_method.payment_method_paysafe > label { --psf-logo-h: 2.25em; } /* adjust as needed */
+.wc_payment_method.payment_method_paysafe > label img,
+.wc_payment_method.payment_method_paysafe > label svg {
+	height: var(--psf-logo-h) !important;
+	max-height: var(--psf-logo-h) !important;
+	width: auto !important;
+	display: inline-block !important;
+	object-fit: contain !important;
+	vertical-align: middle !important;
+}
+.wc_payment_method.payment_method_paysafe > label img[src*="interac"],
+.wc_payment_method.payment_method_paysafe > label img[src*="e-transfer"],
+.wc_payment_method.payment_method_paysafe > label img[src*="etransfer"],
+.wc_payment_method.payment_method_paysafe > label svg[aria-label*="interac"] {
+	height: calc(var(--psf-logo-h) - 0.65em) !important; /* optical trim */
+	max-height: calc(var(--psf-logo-h) - 0.65em) !important;
+}
+
+/* Adjust space between text and first logo only */
+.payment_method_paysafe label img:first-of-type {
+	margin-left: 0.75em !important;
+}
+
+/* Row #2 (in-form header): shared logo height + slight Interac reduction */
+.paysafe-card-header .paysafe-card-logos { --psf-logo-h: 2.35em; }
+.paysafe-card-header .paysafe-card-logos img,
+.paysafe-card-header .paysafe-card-logos svg {
+	height: var(--psf-logo-h) !important;
+	max-height: var(--psf-logo-h) !important;
+	width: auto !important;
+}
+.paysafe-card-header .paysafe-card-logos img[src*="interac"],
+.paysafe-card-header .paysafe-card-logos img[src*="e-transfer"],
+.paysafe-card-header .paysafe-card-logos img[src*="etransfer"],
+.paysafe-card-header .paysafe-card-logos svg[aria-label*="interac"] {
+	height: calc(var(--psf-logo-h) - 0.65em) !important; /* trims visual oversize */
+	max-height: calc(var(--psf-logo-h) - 0.65em) !important;
+}
+
+/* Override WooCommerce's input styling */
+.woocommerce-checkout .paysafe-iframe-field input {
+	border: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.woocommerce-checkout #payment .payment_method_paysafe .paysafe-iframe-containers {
+	display: flex !important;
+}
+
+.woocommerce-checkout #payment .payment_method_paysafe .paysafe-payment-section {
+	display: block !important;
+}
+
+/* Enforce hosted container height parity in Woo contexts (protect against theme overrides) */
+.woocommerce-checkout #payment .payment_method_paysafe .paysafe-iframe-field {
+	min-height: var(--psf-field-height, 2.875rem) !important;
+	height: var(--psf-field-height, 2.875rem) !important;
+}
+
+/* ========================================
+   SAVED CARDS SECTION - SPACING AND ALIGNMENT ONLY
+   ======================================== */
+
+/* Saved cards section */
+.paysafe-saved-cards {
+	margin-bottom: 1.25rem;
+}
+
+/* Reduce container spacing */
+.paysafe-saved-cards-container {
+	padding: 0.75rem !important;
+	margin: 0.5rem 0 0.5rem 1.5rem !important;
+}
+
+/* Saved card item - adjust padding and ensure single line */
+.paysafe-saved-card-item {
+	background: white;
+	border: 1px solid #d9d9d9;
+	border-radius: 0.3125rem;
+	padding: 0.5rem 0.75rem !important;
+	margin-bottom: 0.5rem;
+	display: flex !important;
+	align-items: center !important;
+	gap: 0.4em !important;
+	cursor: pointer;
+	transition: border-color 0.2s ease;
+	white-space: nowrap !important; /* Prevent wrapping */
+}
+
+.paysafe-saved-card-item:hover {
+	border-color: #999;
+}
+
+/* SAVED CARD: selected state with persistent thicker outline */
+.paysafe-saved-card-item.selected,
+.paysafe-saved-card-item:has(input[type="radio"]:checked) {
+	border-color: #1E4270 !important;
+	box-shadow: 0 0 0 0.125rem #1E4270 !important; /* twice the hover thickness */
+}
+
+.paysafe-saved-card-radio {
+	width: 1.125em;
+	height: 1.125em;
+	margin: 0;
+}
+
+/* Extra 0.3em vertical space only between saved-card rows */
+.paysafe-saved-cards-container .paysafe-saved-card-item + .paysafe-saved-card-item {
+	margin-top: 0.3rem !important;
+}
+
+/* Ensure card details stay on one line */
+.paysafe-card-details {
+	display: flex !important;
+	align-items: center !important;
+	gap: 0.4em !important; /* Reduced gap */
+	white-space: nowrap !important;
+}
+
+/* Adjust card icon size */
+.paysafe-card-details img {
+	height: 1.75em !important;
+	width: auto !important;
+}
+
+/* Adjust card text size */
+.paysafe-card-text {
+	font-size: 0.95em !important;
+}
+
+.paysafe-saved-card-info {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+}
+
+.paysafe-saved-card-type {
+	font-weight: 500;
+}
+
+.paysafe-saved-card-last4 {
+	color: #666;
+}
+
+.paysafe-saved-card-expiry {
+	color: #999;
+	font-size: 0.875em;
+}
+
+/* CVV field - make smaller and align */
+.paysafe-saved-card-cvv {
+	margin-left: 0.2rem !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: 0.15em !important;
+	position: relative !important; /* For tooltip positioning */
+}
+
+.paysafe-saved-card-cvv input,
+.paysafe-saved-card-cvv-input {
+	width: 7em !important;
+	padding: 0.3em 0.4em !important;
+	font-size: 0.9em !important;
+}
+
+.paysafe-saved-card-cvv input::placeholder {
+	font-size: 0.8em !important;
+	/* Unify placeholder a11y styling with live inputs */
+	color: #8C98AA !important;
+	opacity: 1;
+}
+/* Cross-engine parity */
+.paysafe-saved-card-cvv input::-webkit-input-placeholder { color: #8C98AA !important; opacity: 1; }
+.paysafe-saved-card-cvv input:-ms-input-placeholder      { color: #8C98AA !important; opacity: 1; }
+.paysafe-saved-card-cvv input::-ms-input-placeholder     { color: #8C98AA !important; opacity: 1; }
+
+/* Ensure vertical alignment of all CVV fields */
+.paysafe-saved-cards-container .paysafe-saved-card-cvv {
+	min-height: 1.8em !important;
+}
+
+/* Help icon styling with proper colors and transitions */
+.paysafe-cvv-help-icon {
+	background: #4A5568 !important; /* Dark grey background */
+	color: #E2E8F0 !important; /* Light grey text */
+	transition: background-color 0.3s ease !important; /* 0.3s transition */
+}
+
+.paysafe-cvv-help-icon:hover {
+	background: #bfbfbf !important; /* Lighter grey on hover */
+	color: #333 !important; /* Darker text on hover */
+}
+
+/* Tooltip display in saved cards - glass effect with white text */
+.paysafe-cvv-help-icon .paysafe-cvv-tooltip {
+	display: block !important;
+	position: absolute !important;
+	bottom: calc(100% + 0.5em) !important;
+	right: -2em !important;
+	width: 13.75em !important;
+	min-width: 13.75em !important;
+	height: auto !important;
+	white-space: normal !important;
+	z-index: 10000 !important;
+	background: rgba(51, 51, 51, 0.9) !important;
+	backdrop-filter: blur(10px) !important;
+	-webkit-backdrop-filter: blur(10px) !important;
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	box-shadow: 0 0.5rem 2rem 0 rgba(31, 38, 135, 0.37) !important;
+	padding: 0.75em 1em !important;
+	color: #ffffff !important;
+	font: 600 0.8rem/1.5 Arial, Helvetica, sans-serif !important;
+	opacity: 0 !important;
+	visibility: hidden !important;
+	transition: opacity 0.8s ease 0.3s, visibility 0s linear 0.3s !important;
+	pointer-events: none !important;
+}
+
+/* Force white text for all children */
+.paysafe-cvv-help-icon .paysafe-cvv-tooltip,
+.paysafe-cvv-help-icon .paysafe-cvv-tooltip * {
+	color: #ffffff !important;
+}
+
+/* Show tooltip on hover with delay and fade */
+.paysafe-cvv-help-icon:hover .paysafe-cvv-tooltip {
+	display: block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	transition: opacity 0.8s ease 0.3s, visibility 0s linear 0s !important;
+}
+
+/* Quick fade out when not hovering */
+.paysafe-cvv-help-icon:not(:hover) .paysafe-cvv-tooltip {
+	transition: opacity 0.3s ease 0s, visibility 0s linear 0.3s !important;
+}
+
+/* Responsive design */
+@media (max-width: 37.5em) {
+	.paysafe-form-row-cards {
+		grid-template-columns: 1fr;
+	}
+
+	.paysafe-card-logos {
+		gap: 0.025em;
+	}
+
+	/* Mobile: drive header logo height by var so Interac tweak still applies */
+	.paysafe-card-header .paysafe-card-logos { --psf-logo-h: 1.25em; }
+
+	.paysafe-payment-section {
+		padding: 1rem;
+	}
+
+	.paysafe-wallet-buttons {
+		flex-direction: column;
+	}
+
+	.paysafe-apple-pay-button,
+	.paysafe-google-pay-button {
+		width: 100%;
+	}
+
+	/* Stack card title and logos on mobile */
+	.paysafe-card-header {
+		flex-wrap: wrap;
+	}
+
+	.paysafe-card-logos {
+		width: 100%;
+		margin-top: 0.5rem;
+	}
+}
+
+/* Override any theme styles */
+.paysafe-payment-wrapper input[type="text"],
+.paysafe-payment-wrapper input[type="email"],
+.paysafe-payment-wrapper input[type="tel"],
+.paysafe-payment-wrapper select {
+	box-sizing: border-box !important;
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+}
+
+/* Ensure proper inheritance */
+.paysafe-payment-wrapper form,
+.paysafe-payment-wrapper fieldset,
+.paysafe-payment-wrapper div {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* Loading state */
+.paysafe-payment-wrapper.processing {
+	opacity: 0.6;
+	pointer-events: none;
+	position: relative;
+}
+
+/* Padlock icon - static, doesn't spin */
+.paysafe-payment-wrapper.processing::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 1.75rem;
+	height: 1.75rem;
+	z-index: 2;
+	background-image: url("data:image/svg+xml,...padlock SVG...");
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+/* Windows 11 style dot spinner ring */
+.paysafe-payment-wrapper.processing::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 4.5rem;
+	height: 4.5rem;
+	margin: -2.25rem 0 0 -2.25rem;
+	z-index: 1;
+	background: 
+		radial-gradient(circle at 50% 0%, #1E4270 0.35rem, transparent 0.4rem),
+		... more gradients ...;
+	background-repeat: no-repeat;
+	border-radius: 50%;
+	animation: paysafe-dots-spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes paysafe-dots-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+@keyframes paysafe-spinner-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+/* === Full-screen processing overlay & spinner (pure CSS) === */
+#paysafe-processing-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.6);
+	z-index: 999999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity .15s ease;
+}
+#paysafe-processing-overlay.is-visible { opacity: 1; }
+.paysafe-processing-message {
+	background: #fff;
+	padding: 2rem 3rem;
+	border-radius: .5rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.paysafe-spinner {
+	position: relative;
+	width: 4.5rem;
+	height: 4.5rem;
+}
+
+/* Premium Badge Shield Lock in center */
+.paysafe-spinner::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 2rem;
+	height: 2rem;
+	z-index: 2;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' fill='%231E4270'/%3E%3Cpath d='M12 2.5L4.5 5.8v5.2c0 4.7 3.2 9.1 7.5 10.2 4.3-1.1 7.5-5.5 7.5-10.2V5.8L12 2.5z' fill='%232d5a8a'/%3E%3Crect x='8.5' y='11' width='7' height='6' rx='1' fill='white'/%3E%3Cpath d='M10 11V8.5a2 2 0 1 1 4 0V11' stroke='white' stroke-width='1.8' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='12' cy='13.2' r='1' fill='%231E4270'/%3E%3Cpath d='M12 13.5V16' stroke='%231E4270' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+/* 8-dot fading spinner ring (WordFence style with SMIL animation) */
+.paysafe-spinner::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231E4270'%3E%3Ccircle cx='50' cy='15' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0s'/%3E%3C/circle%3E%3Ccircle cx='79.5' cy='20.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.125s'/%3E%3C/circle%3E%3Ccircle cx='93' cy='50' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.25s'/%3E%3C/circle%3E%3Ccircle cx='79.5' cy='79.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.375s'/%3E%3C/circle%3E%3Ccircle cx='50' cy='93' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.5s'/%3E%3C/circle%3E%3Ccircle cx='20.5' cy='79.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.625s'/%3E%3C/circle%3E%3Ccircle cx='7' cy='50' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.75s'/%3E%3C/circle%3E%3Ccircle cx='20.5' cy='20.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.875s'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+/* Focus styles for accessibility */
+.paysafe-iframe-field input:focus,
+.paysafe-name-field:focus {
+	outline: 0.125rem solid transparent;
+	outline-offset: 0.125rem;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.paysafe-iframe-field,
+	.paysafe-name-field {
+		border-width: 2px;
+	}
+
+	.paysafe-iframe-field:focus-within,
+	.paysafe-name-field:focus {
+		border-color: Highlight;
+		box-shadow: 0 0 0 0.125rem Highlight;
+	}
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.paysafe-payment-section {
+		background: #2d3748;
+		border-color: #4a5568;
+	}
+
+	.paysafe-iframe-field,
+	.paysafe-name-field {
+		background: #1a202c;
+		border-color: #4a5568;
+		color: #e2e8f0;
+	}
+
+	.paysafe-iframe-field input {
+		color: #e2e8f0;
+	}
+
+	.paysafe-iframe-field input::placeholder,
+	.paysafe-name-field::placeholder {
+		color: #8C98AA; /* match non-hosted placeholders exactly */
+		opacity: 1;     /* ensure full visibility for a11y */
+	}
+
+	/* Dark-mode hover/focus parity for Name-on-card */
+	.paysafe-name-field:hover {
+		border-color: #1E4270 !important;
+		box-shadow: 0 0 0 1px #1E4270 !important;
+	}
+	.paysafe-name-field:focus {
+		border-color: #1E4270 !important;
+		box-shadow: 0 0 0 0.125rem #1E4270 !important;
+		z-index: 5;
+	}
+
+	.paysafe-card-title {
+		color: #e2e8f0;
+	}
+
+	.paysafe-divider span {
+		background: #2d3748;
+		color: #a0aec0;
+	}
+
+	.paysafe-help-icon {
+		background: #4a5568;
+		color: #e2e8f0;
+	}
+
+	/* Dark-mode parity for *all* error containers, not just .paysafe-errors */
+	.payment_method_paysafe #paysafe-errors,
+	.payment_method_paysafe .paysafe-inline-error,
+	.payment_method_paysafe .paysafe-errors {
+		background: #742a2a;
+		border-color: #9b2c2c;
+		color: #fed7d7;
+	}
+	/* Dark-mode text color for field-level/inline errors (no container background) */
+	.payment_method_paysafe #paysafe-connectivity-error,
+	.payment_method_paysafe .paysafe-field-error-message {
+		color: #fed7d7;
+	}
+}
+
+/* Print styles */
+@media print {
+	.paysafe-payment-wrapper {
+		display: none;
+	}
+}
+
+/* Animation for card type detection */
+.paysafe-card-type-icon {
+	animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-50%) scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(-50%) scale(1);
+	}
+}
+
+/* Tooltip styles */
+.paysafe-tooltip {
+	position: absolute;
+	background: #333;
+	color: white;
+	padding: 0.5rem 0.75rem;
+	border-radius: 0.25rem;
+	font-size: 0.75em;
+	white-space: nowrap;
+	z-index: 10000; /* ensure above hosted iframes & wallet buttons */
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	bottom: calc(100% + 0.5em);
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.paysafe-tooltip.visible {
+	opacity: 1;
+}
+
+.paysafe-tooltip::after {
+	content: none !important;
+}
+
+/* SAQ-A parity: prevent duplicate legacy tooltip element inside CVV wrapper.
+   We use ::before/::after on .paysafe-help-icon only here. */
+.paysafe-cvv-wrapper .paysafe-tooltip { display: none !important; }
+
+/* Kill WooCommerce’s built-in tooltip bubble/arrow inside the Paysafe UI.
+   (Woo adds :before/:after on .woocommerce-help-tip; that’s the stray triangle you’re seeing.)
+   We keep the element interactive but suppress its pseudo-elements so only our
+   .paysafe-help-icon::before/::after tooltip renders. */
+.paysafe-payment-wrapper .woocommerce-help-tip::before,
+.paysafe-payment-wrapper .woocommerce-help-tip::after,
+.paysafe-cvv-wrapper .woocommerce-help-tip::before,
+.paysafe-cvv-wrapper .woocommerce-help-tip::after{
+  content: none !important;
+  display: none !important;
+}
+
+/* Create tooltip for "Use a new card" section help icon */
+.paysafe-help-icon::after {
+	content: '3-digit security code usually found on the back of your card. American Express cards have a 4-digit code located on the front. Also known as a CVV or CVC code.' !important;
+	position: absolute !important;
+	bottom: calc(100% + 0.5em) !important;
+	right: -7em !important; /* Adjust positioning */
+	width: 13.75em !important;
+	min-width: 13.75em !important;
+	height: auto !important;
+	white-space: normal !important;
+	z-index: 10000 !important;
+
+	/* Glass effect matching saved cards */
+	background: rgba(51, 51, 51, 0.9) !important;
+	backdrop-filter: blur(10px) !important;
+	-webkit-backdrop-filter: blur(10px) !important;
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	box-shadow: 0 0.5rem 2rem 0 rgba(31, 38, 135, 0.37) !important;
+	border-radius: 0.25rem !important;
+
+	/* Padding and text styling - unified with saved cards */
+	padding: 0.75em 1em !important;
+	color: #ffffff !important;
+
+	/* Typography: unified cross-device font, locked size & weight */
+	font: 600 0.8rem/1.5 Arial, Helvetica, sans-serif !important;
+
+	/* Hidden by default */
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+
+	/* Transition for fade effect */
+	transition: opacity 0.8s ease 0.3s, visibility 0s linear 0.3s !important;
+}
+
+/* Show tooltip on hover for "Use a new card" section */
+.paysafe-help-icon:hover::after {
+	opacity: 1 !important;
+	visibility: visible !important;
+	transition: opacity 0.8s ease 0.3s, visibility 0s linear 0s !important;
+}
+
+/* Quick fade out when not hovering */
+.paysafe-help-icon:not(:hover)::after {
+	transition: opacity 0.3s ease 0s, visibility 0s linear 0.3s !important;
+}
+
+/* Add arrow to "Use a new card" tooltip */
+.paysafe-help-icon::before {
+	content: none !important;
+}
+
+/* Success state */
+.paysafe-payment-wrapper.success .paysafe-payment-section {
+	background: #f0fdf4;
+	border-color: #86efac;
+}
+
+/* Additional fixes for common theme conflicts */
+.paysafe-payment-wrapper ul,
+.paysafe-payment-wrapper ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.paysafe-payment-wrapper li {
+	margin: 0;
+	padding: 0;
+}
+
+/* Visible focus for keyboard users even if parent doesn't style :focus-within */
+@supports selector(:focus-visible) {
+  .paysafe-payment-wrapper input:focus-visible,
+  .paysafe-payment-wrapper select:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 0.125rem #4299e1 !important;
+	border-color: #4299e1 !important;
+  }
+  /* Override specifically for Name on card to match hosted fields focus */
+  .paysafe-payment-wrapper .paysafe-name-field:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 0.125rem #1E4270 !important;
+	border-color: #1E4270 !important;
+  }
+}
+
+/* Override keyboard focus color specifically for Name-on-card */
+@supports selector(:focus-visible) {
+  .paysafe-payment-wrapper .paysafe-name-field:focus-visible {
+	box-shadow: 0 0 0 0.125rem #1E4270 !important;
+	border-color: #1E4270 !important;
+	z-index: 5;
+  }
+}
+
+/* Ensure card logos container doesn't break */
+.paysafe-card-header > * {
+	min-width: 0;
+}
+
+/* Fix for +3 indicator if you decide to use it */
+.paysafe-more-cards {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.125em 0.375em;
+	background: rgba(0, 0, 0, 0.05);
+	border-radius: 0.25em;
+	font-size: 0.75em;
+	color: #666;
+	margin-left: 0.25em;
+}
+
+/* Add gap between logos, only for logos inside the payment form */
+.paysafe-payment-section .paysafe-card-logos {
+	gap: 0.35em !important; /* Adjust as needed */
+}
+
+/* ===== Tooltip font-size normalization (both sections) ===== */
+.paysafe-payment-wrapper .paysafe-new-card-option-wrapper .paysafe-help-icon::after {
+	font: 600 0.8rem/1.5 Arial, Helvetica, sans-serif !important;
+}
+.paysafe-payment-wrapper .paysafe-saved-cards-container .paysafe-cvv-help-icon .paysafe-cvv-tooltip {
+	font: 600 0.8rem/1.5 Arial, Helvetica, sans-serif !important;
+}
+/* ==== Hosted Fields overlay & tooltip parity (non-destructive) ==== */
+/* Keep the CVV help icon above the hosted iframe without changing layout */
+.paysafe-cvv-wrapper .paysafe-iframe-field { position: relative; }
+.paysafe-cvv-wrapper .paysafe-iframe-field iframe { position: relative; z-index: 0; }
+.paysafe-cvv-wrapper .paysafe-help-icon { z-index: 2; }
+/* Ensure field rings sit above neighbors just like hosted containers */
+#cardNumber_container,
+#cardExpiry_container,
+#cardCvv_container {
+  position: relative;
+  z-index: 1;
+}
+#cardNumber_container.psf-focus,
+#cardExpiry_container.psf-focus,
+#cardCvv_container.psf-focus,
+.paysafe-iframe-field.psf-focus {
+  z-index: 2;
+}
+/* Right-side insets computed by JS (formatted for readability) */
+#cardNumber_container {
+  padding-right: var(--psf-cardnumber-right, 3.125rem);
+}
+#cardCvv_container {
+  padding-right: var(--psf-cvv-right, 2.5rem);
+}
+#cardExpiry_container {
+  padding-right: 0.75rem;
+}
+
+/* Ring layering: ensure all field rings render above neighbors/icons */
+.paysafe-iframe-field,
+#cardNumber_container,
+#cardExpiry_container,
+#cardCvv_container,
+.paysafe-name-field {
+  position: relative;
+  z-index: 2;
+}
+.paysafe-iframe-field:hover,
+.paysafe-iframe-field.psf-focus,
+#cardNumber_container.psf-focus,
+#cardExpiry_container.psf-focus,
+#cardCvv_container.psf-focus,
+.paysafe-name-field:hover,
+.paysafe-name-field:focus { z-index: 5; }
+.paysafe-iframe-field.psf-invalid,
+#cardNumber_container.psf-invalid,
+#cardExpiry_container.psf-invalid,
+#cardCvv_container.psf-invalid,
+.paysafe-iframe-field.error,
+#cardNumber_container.error,
+#cardExpiry_container.error,
+#cardCvv_container.error,
+.paysafe-name-field.error,
+.paysafe-name-field.psf-invalid { z-index: 6; }
+/* ==== Final authority for focus/valid vs. error (do not move) ==== */
+/* Blue focus/valid ring (strictly keyed off .psf-focus / .psf-valid) */
+.paysafe-payment-wrapper .paysafe-iframe-field.psf-focus,
+.paysafe-payment-wrapper .paysafe-iframe-field.psf-valid,
+#cardNumber_container.psf-focus,
+#cardNumber_container.psf-valid,
+#cardExpiry_container.psf-focus,
+#cardExpiry_container.psf-valid,
+#cardCvv_container.psf-focus,
+#cardCvv_container.psf-valid,
+/* Connectivity status (blue when connected) */
+#cardNumber_container.psf-connected,
+#cardExpiry_container.psf-connected,
+#cardCvv_container.psf-connected {
+  border: 1px solid #4299e1 !important;
+  box-shadow: 0 0 0 1px #4299e1 !important;
+}
+
+/* Connected-state refinements:
+   - Hover: darker blue ring
+   - Focus: thicker dark-blue ring
+   - Never override explicit error states */
+#cardNumber_container.psf-connected:hover:not(.psf-invalid):not(.error),
+#cardExpiry_container.psf-connected:hover:not(.psf-invalid):not(.error),
+#cardCvv_container.psf-connected:hover:not(.psf-invalid):not(.error),
+.paysafe-payment-wrapper .paysafe-iframe-field.psf-connected:hover:not(.psf-invalid):not(.error) {
+  border: 1px solid #1E4270 !important;
+  box-shadow: 0 0 0 1px #1E4270 !important;
+}
+#cardNumber_container.psf-connected.psf-focus:not(.psf-invalid):not(.error),
+#cardExpiry_container.psf-connected.psf-focus:not(.psf-invalid):not(.error),
+#cardCvv_container.psf-connected.psf-focus:not(.psf-invalid):not(.error),
+.paysafe-payment-wrapper .paysafe-iframe-field.psf-connected.psf-focus:not(.psf-invalid):not(.error) {
+  border: 1px solid #1E4270 !important;
+  box-shadow: 0 0 0 0.125rem #1E4270 !important; /* thicker on focus */
+}
+
+/* Error always wins over focus/valid (red outline) */
+/* Match billing field styling: bright red border with glow */
+.paysafe-payment-wrapper .paysafe-iframe-field.error,
+.paysafe-payment-wrapper .paysafe-iframe-field.psf-invalid,
+#cardNumber_container.error,
+#cardNumber_container.psf-invalid,
+#cardExpiry_container.error,
+#cardExpiry_container.psf-invalid,
+#cardCvv_container.error,
+#cardCvv_container.psf-invalid {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.55), 0 0 6px rgba(255, 77, 79, 0.65) !important;
+}
+
+/* Disconnected status - keep separate styling */
+#cardNumber_container.psf-disconnected,
+#cardExpiry_container.psf-disconnected,
+#cardCvv_container.psf-disconnected {
+  border: 1px solid #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/* =========================================================
+   SAQ-A-EP ONLY (scoped): containers with native inputs
+   Mirror .paysafe-name-field rings for #card_number/#card_expiry/#card_cvv
+   We detect EP mode by checking for those inputs inside the containers.
+   ========================================================= */
+/* Neutral ring (same as Name on card) */
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container:not(.psf-invalid):not(.error),
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container:not(.psf-invalid):not(.error),
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container:not(.psf-invalid):not(.error) {
+  border: 1px solid #4299e1 !important;
+  box-shadow: 0 0 0 1px #4299e1 !important;
+}
+/* Hover parity (darker blue ring like SAQ-A Only) */
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container:not(.psf-invalid):not(.error):hover,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container:not(.psf-invalid):not(.error):hover,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container:not(.psf-invalid):not(.error):hover {
+  border: 1px solid #1E4270 !important;
+  box-shadow: 0 0 0 1px #1E4270 !important;
+}
+/* Focus parity (thicker dark-blue) */
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container:not(.psf-invalid):not(.error):focus-within,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container:not(.psf-invalid):not(.error):focus-within,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container:not(.psf-invalid):not(.error):focus-within {
+  border: 1px solid #1E4270 !important;
+  box-shadow: 0 0 0 0.125rem #1E4270 !important;
+  z-index: 6;
+}
+
+/* --- EP-only UX polish ---
+   1) Hide placeholders as soon as the field is focused (clicked)
+   2) Remove the inner blue outline on the <input> itself
+*/
+/* Hide placeholder on focus (cross-engine) */
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container input:focus::placeholder,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container input:focus::placeholder,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container input:focus::placeholder {
+  opacity: 0 !important;
+  color: transparent !important;
+}
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container input:focus::-webkit-input-placeholder,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container input:focus::-webkit-input-placeholder,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container input:focus::-webkit-input-placeholder {
+  opacity: 0 !important;
+  color: transparent !important;
+}
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container input:focus::-ms-input-placeholder,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container input:focus::-ms-input-placeholder,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container input:focus::-ms-input-placeholder {
+  opacity: 0 !important;
+  color: transparent !important;
+}
+/* Remove inner blue outline/shadow on the input; container ring handles focus */
+.paysafe-iframe-containers:has(#card_number)  #cardNumber_container input:focus,
+.paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container input:focus,
+.paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+@supports selector(:focus-visible) {
+  .paysafe-iframe-containers:has(#card_number)  #cardNumber_container input:focus-visible,
+  .paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container input:focus-visible,
+  .paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container input:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+  }
+}
+
+/* Dark-mode hover/focus parity to match .paysafe-name-field overrides */
+@media (prefers-color-scheme: dark) {
+  .paysafe-iframe-containers:has(#card_number)  #cardNumber_container:hover,
+  .paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container:hover,
+  .paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container:hover {
+	border-color: #1E4270 !important;
+	box-shadow: 0 0 0 1px #1E4270 !important;
+  }
+  .paysafe-iframe-containers:has(#card_number)  #cardNumber_container:focus-within,
+  .paysafe-iframe-containers:has(#card_expiry)  #cardExpiry_container:focus-within,
+  .paysafe-iframe-containers:has(#card_cvv)     #cardCvv_container:focus-within {
+	border-color: #1E4270 !important;
+	box-shadow: 0 0 0 0.125rem #1E4270 !important;
+  }
+}
+
+/* Ensure the visible blue ring container turns red when wrappers get psf-invalid */
+/* Match billing field styling: bright red border with glow */
+#cardNumber_container.psf-invalid,
+#cardExpiry_container.psf-invalid,
+#cardCvv_container.psf-invalid {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.55), 0 0 6px rgba(255, 77, 79, 0.65) !important;
+}
+
+/* ===== Paysafe EP/Hosted parity overrides (append-only, do not remove) ===== */
+/* Keep grid children from overflowing their columns */
+.paysafe-form-row-cards { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.paysafe-iframe-field-wrapper, .paysafe-cvv-wrapper { min-width: 0; }
+
+/* Ensure CVV contents never escape the shell */
+#cardCvv_container { overflow: visible; position: relative; } /* SAQ-A parity: keep bubble from clipping/snapping */
+
+/* EP/native inputs: never draw their own borders or focus rings.
+   The container (#cardNumber_container, #cardExpiry_container, #cardCvv_container) owns visuals. */
+#cardNumber_container input,
+#cardExpiry_container input,
+#cardCvv_container input {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+@supports selector(:focus-visible) {
+  #cardNumber_container input:focus,
+  #cardExpiry_container input:focus,
+  #cardCvv_container input:focus,
+  #cardNumber_container input:focus-visible,
+  #cardExpiry_container input:focus-visible,
+  #cardCvv_container input:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+	border-color: transparent !important;
+  }
+}
+ 
+ /* Keep proxy inputs present for browser/PM autofill but non-interactive & non-visible */
+ .psf-autofill-proxy{
+   position:absolute !important; left:-9999px !important; top:auto !important;
+   width:1px !important; height:1px !important; opacity:0 !important;
+   pointer-events:none !important; padding:0 !important; margin:0 !important; border:0 !important;
+ }
+/* Paysafe – Name on Card styling */
+.paysafe-payment-wrapper #cardholder_name,
+.paysafe-woocommerce-form #cardholder_name {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.0625rem; /* 17px */
+}
+.paysafe-payment-wrapper #cardholder_name::placeholder,
+.paysafe-woocommerce-form #cardholder_name::placeholder {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 400;
+}
+
+/* Paysafe – lock/brand inline icon sizing (authoritative) */
+.paysafe-lock-icon { width: var(--psf-lock-size) !important; height: var(--psf-lock-size) !important; }
+.paysafe-lock-icon img, .paysafe-lock-icon svg { width: 100% !important; height: 100% !important; display: inline-block; }
+#card-type-icon img { height: var(--psf-card-size) !important; width: auto !important; display: inline-block !important; }
+
+/* ===================================================================
+   WooCommerce Checkout Spinner - Viewport Centering Override
+   =================================================================== */
+/* Force WooCommerce's blockUI spinner to center in viewport, not form */
+.wc-block-checkout .blockUI.blockOverlay,
+form.checkout.processing .blockUI.blockOverlay,
+form.woocommerce-checkout .blockUI.blockOverlay,
+.blockUI.blockOverlay {
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	z-index: 999999 !important;
+}
+
+/* Center the spinner message box in viewport */
+.wc-block-checkout .blockUI.blockMsg,
+form.checkout.processing .blockUI.blockMsg,
+form.woocommerce-checkout .blockUI.blockMsg,
+.blockUI.blockMsg {
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	transform: translate(-50%, -50%) !important;
+	-webkit-transform: translate(-50%, -50%) !important;
+	-ms-transform: translate(-50%, -50%) !important;
+	margin: 0 !important;
+	width: auto !important;
+	z-index: 1000000 !important;
+}
+ 
+/* ===================================================================
+   WooCommerce blockUI Spinner Override - 8-dot SMIL + Premium Badge
+   =================================================================== */
+
+.woocommerce .blockUI.blockOverlay::before,
+.woocommerce-checkout.processing .blockUI.blockOverlay::before,
+form.checkout.processing .blockUI.blockOverlay::before {
+	content: '';
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	width: 4rem !important;
+	height: 4rem !important;
+	margin: -2rem 0 0 -2rem !important;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231E4270'%3E%3Ccircle cx='50' cy='15' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0s'/%3E%3C/circle%3E%3Ccircle cx='79.5' cy='20.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.125s'/%3E%3C/circle%3E%3Ccircle cx='93' cy='50' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.25s'/%3E%3C/circle%3E%3Ccircle cx='79.5' cy='79.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.375s'/%3E%3C/circle%3E%3Ccircle cx='50' cy='93' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.5s'/%3E%3C/circle%3E%3Ccircle cx='20.5' cy='79.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.625s'/%3E%3C/circle%3E%3Ccircle cx='7' cy='50' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.75s'/%3E%3C/circle%3E%3Ccircle cx='20.5' cy='20.5' r='8'%3E%3Canimate attributeName='opacity' values='1;0.2;1' dur='1s' repeatCount='indefinite' begin='0.875s'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E") !important;
+	background-size: contain !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+	background-color: transparent !important;
+	z-index: 1000001 !important;
+}
+
+/* Premium Badge Shield Lock in center of WooCommerce spinner */
+.woocommerce .blockUI.blockOverlay::after,
+.woocommerce-checkout.processing .blockUI.blockOverlay::after,
+form.checkout.processing .blockUI.blockOverlay::after {
+	content: '' !important;
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	width: 2rem !important;
+	height: 2rem !important;
+	margin: -1rem 0 0 -1rem !important;
+	z-index: 1000002 !important;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' fill='%231E4270'/%3E%3Cpath d='M12 2.5L4.5 5.8v5.2c0 4.7 3.2 9.1 7.5 10.2 4.3-1.1 7.5-5.5 7.5-10.2V5.8L12 2.5z' fill='%232d5a8a'/%3E%3Crect x='8.5' y='11' width='7' height='6' rx='1' fill='white'/%3E%3Cpath d='M10 11V8.5a2 2 0 1 1 4 0V11' stroke='white' stroke-width='1.8' stroke-linecap='round' fill='none'/%3E%3Ccircle cx='12' cy='13.2' r='1' fill='%231E4270'/%3E%3Cpath d='M12 13.5V16' stroke='%231E4270' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+	background-size: contain !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+}
