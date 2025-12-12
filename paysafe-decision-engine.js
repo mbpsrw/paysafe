@@ -6,7 +6,7 @@
  * All other code (payment-guard.js, payment-form.js, etc.) must consult this engine.
  * 
  * Version: 1.0.0
- * Created: 2025-12-10
+ * Created: 2025-12-12
  */
 
 (function($) {
@@ -154,47 +154,63 @@
 				
 				return decision;
 			}
-			
-			// NEW CARD - SAQ-A WITH FALLBACK MODE (Default)
-			// Try hosted fields first, fall back to direct tokenization if needed
-			if (pciMode === 'saq_a_with_fallback') {
-				if (hostedFieldsState.available && hostedFieldsState.connected && !hostedFieldsState.failed) {
-					// Hosted fields are ready - use them (preferred path)
-					decision.flow = 'hosted_tokenize';
-					decision.skipValidation = false;
-					decision.skipTokenization = false;
-					
-					// Check all hosted field requirements
-					if (!nameState.valid) {
-						decision.ready = false;
-						decision.errors.push('Please enter the cardholder name');
-					} else if (!hostedFieldsState.valid) {
-						decision.ready = false;
-						decision.errors.push('Please complete all card fields (number, expiry, security code)');
-					} else if (hostedFieldsState.unsupportedBrand) {
-						decision.ready = false;
-						decision.errors.push('This card type is not accepted');
-					} else {
-						decision.ready = true;
-					}
-				} else {
-					// Fallback to direct tokenization (server-side)
-					decision.flow = 'direct_tokenize';
-					decision.skipValidation = false;
-					decision.skipTokenization = false;
-					
-					const directValid = this._validateDirectFields();
-					decision.debug.directFields = directValid;
-					decision.ready = directValid.valid;
-					
-					if (!directValid.valid) {
-						decision.errors = directValid.errors;
-					}
-				}
-				
-				return decision;
+
+	// NEW CARD - SAQ-A WITH FALLBACK MODE (Default)
+	// Try hosted fields first, fall back to direct tokenization if needed
+	if (pciMode === 'saq_a_with_fallback') {
+
+		// 1) STILL CONNECTING (0–8s window)
+		// Hosted fields are in progress but not yet connected and not failed.
+		// In this case we *block* submission with a gentle message instead of
+		// immediately dropping to legacy card inputs.
+		if (hostedFieldsState.connecting && !hostedFieldsState.failed) {
+			decision.flow = 'hosted_tokenize';
+			decision.skipValidation = false;
+			decision.skipTokenization = false;
+			decision.ready = false;
+			decision.errors.push(
+				'Secure card fields are still connecting.\nPlease wait a moment and try again.'
+			);
+			return decision;
+		}
+
+		// 2) HOSTED FIELDS READY (preferred path)
+		if (hostedFieldsState.available && hostedFieldsState.connected && !hostedFieldsState.failed) {
+			decision.flow = 'hosted_tokenize';
+			decision.skipValidation = false;
+			decision.skipTokenization = false;
+
+			// Check all hosted field requirements
+			if (!nameState.valid) {
+				decision.ready = false;
+				decision.errors.push('Please enter the cardholder name');
+			} else if (!hostedFieldsState.valid) {
+				decision.ready = false;
+				decision.errors.push('Please complete all card fields (number, expiry, security code)');
+			} else if (hostedFieldsState.unsupportedBrand) {
+				decision.ready = false;
+				decision.errors.push('This card type is not accepted');
+			} else {
+				decision.ready = true;
 			}
-			
+		} else {
+			// 3) FALLBACK: hosted fields have failed (timeout/error) => direct tokenization
+			// No "hosted fields failed; using standard fields below" message here.
+			// We fall back silently and let normal card validation messages show.
+			decision.flow = 'direct_tokenize';
+			decision.skipValidation = false;
+			decision.skipTokenization = false;
+
+			const directValid = this._validateDirectFields();
+			decision.debug.directFields = directValid;
+			decision.ready = directValid.valid;
+			if (!directValid.valid) {
+				decision.errors = directValid.errors;
+			}
+		}
+		return decision;
+	}
+
 			// NEW CARD - SAQ-A-EP ONLY MODE
 			// Direct tokenization only (no hosted fields)
 			if (pciMode === 'saq_aep_only') {
@@ -290,23 +306,35 @@
 		/**
 		 * Get hosted fields state (availability, connection, validity)
 		 */
-		_getHostedFieldsState: function() {
-			const state = {
-				available: false,
-				connected: false,
-				valid: false,
-				failed: false,
-				unsupportedBrand: false
-			};
-			
-			// Check if hosted fields instance exists
-			state.available = !!window.paysafeFieldsInstance;
-			state.failed = !!window.paysafeHostedFieldsFailed;
-			
-			if (!state.available) {
-				return state;
-			}
-			
+	_getHostedFieldsState: function() {
+		const state = {
+			available: false,
+			connected: false,
+			valid: false,
+			failed: false,
+			unsupportedBrand: false,
+			// New: explicit "connecting" flag for the 0–8s window where
+			// hosted fields are still spinning up but have not timed out.
+			connecting: false
+		};
+
+		// Check if hosted fields instance exists
+		state.available = !!window.paysafeFieldsInstance;
+		state.failed = !!window.paysafeHostedFieldsFailed;
+
+		// "Connecting" = we have a hosted fields container on the page,
+		// have not flagged failure yet, and no instance is available.
+		// In that window the Decision Engine will block submit with a
+		// gentle "still connecting" message instead of falling back.
+		if (!state.available && !state.failed && document.querySelector('#cardNumber_container')) {
+			state.connecting = true;
+			return state;
+		}
+
+		if (!state.available) {
+			return state;
+		}
+
 			// Check if hosted fields are connected (iframes loaded)
 			const containers = ['#cardNumber_container', '#cardExpiry_container', '#cardCvv_container'];
 			state.connected = containers.every(function(sel) {
@@ -318,7 +346,7 @@
 				return state;
 			}
 			
-			// Check if hosted fields are valid
+		// Check if hosted fields are valid
 			if (typeof window.__ps_allFieldsValid === 'function') {
 				// Use the centralized validation function from payment-form.js
 				state.valid = window.__ps_allFieldsValid();
