@@ -4,7 +4,7 @@
  * Handles direct card input and payment processing
  * Compatible with Paysafe API (formerly Payfirma/Merrco)
  * Version: 1.0.4 - With PCI Compliant Tokenization
-  * Last updated: 2025-12-10
+  * Last updated: 2025-12-12
  */
 
 window.paysafe_params = window.paysafe_params || {};
@@ -671,13 +671,11 @@ window.paysafe_params = window.paysafe_params || {};
 				window.__ps_retryTimer = setTimeout(function(){
 					__ps_stopSpinnerOnly(); // Stop spinner after 10s
 					// show error only after timeout
-					__ps_inlineError('Secure fields failed to load. Retry or use another method.');
+					__ps_inlineError('Secure fields failed to load.\nRetry or use another method.');
 					__ps_showRetryActions();
 				}, Math.max(0, parseInt(delayMs, 10) || 0));
-			} catch(_e){}
-		}
-
-		var setupPromise = paysafe.fields.setup(apiKey, {
+				} catch(_e){} }
+				var setupPromise = paysafe.fields.setup(apiKey, {
 		  environment: paysafe_params.environment === 'live' ? 'LIVE' : 'TEST',
 		  currencyCode: readCurrency(),
 		  fields: {
@@ -704,30 +702,30 @@ window.paysafe_params = window.paysafe_params || {};
 		  },
 	  /* Hosted inputs mirror your live input metrics (no hard-coded guesses) */
 	  style: _psHostedStyle
-		});
+	});
 
 		console.log('⏱️ Setup promise created, typeof:', typeof setupPromise);
 		console.log('⏱️ Has .then?', !!(setupPromise && typeof setupPromise.then === 'function'));
 		console.log('⏱️ Has .catch?', !!(setupPromise && typeof setupPromise.catch === 'function'));
 
-		// Add 6-second timeout for hanging promises
+		// Add 8-second timeout for hanging promises per Paysafe SAQ-A fallback guidance
 		var timeoutPromise = new Promise(function(resolve, reject) {
 			timeoutId = setTimeout(function() {
 				console.error('⏱️ TIMEOUT TRIGGERED at', Date.now() - setupStartTime, 'ms');
-				var err = new Error('Paysafe fields setup timed out after 6 seconds. This usually indicates invalid API credentials or network issues.');
+				var err = new Error('Paysafe fields setup timed out after 8 seconds.\nThis usually indicates invalid API credentials or network issues.');
 				err.code = 'TIMEOUT';
 				reject(err);
-			}, 6000);
+			}, 8000);
 		});
 
-		// UI fail-safe: if setup hangs, surface a visible retry/error after ~6s no matter what
+		// UI fail-safe: if setup hangs, surface a visible retry/error after ~8s no matter what
 		try {
 			if (window.__ps_connectUiTimer) { clearTimeout(window.__ps_connectUiTimer); }
 			window.__ps_connectUiTimer = setTimeout(function(){
 				try { __ps_stopSpinnerOnly(); } catch(_e){}
 				try { __ps_inlineError('Secure card fields failed to load. Please try again or use a different payment method.'); } catch(_e){}
 				try { __ps_showRetryActions(); } catch(_e){}
-			}, 6100);
+			}, 8100);
 		} catch(_e){}
 
 console.log('⏱️ Racing setup vs timeout...');
