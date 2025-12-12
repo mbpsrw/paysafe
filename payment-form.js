@@ -1410,17 +1410,34 @@ function interceptWooEP(e){
 			});
 			return false;
 		}
-		
-		// DECISION ENGINE LOGIC - Single source of truth
-		const decision = window.PaysafeDecisionEngine.getPaymentFlow();
-		
-		// ALWAYS log decision (not just in debug mode)
-		console.log('🔵 [interceptWooEP] Decision Engine result:', {
-			flow: decision.flow,
-			ready: decision.ready,
-			errors: decision.errors,
-			skipTokenization: decision.skipTokenization
-		});
+
+  // DECISION ENGINE LOGIC - Single source of truth
+  const decision = window.PaysafeDecisionEngine.getPaymentFlow();
+  // ALWAYS log decision (not just in debug mode)
+  console.log(' [interceptWooEP] Decision Engine result:', {
+	flow: decision.flow,
+	ready: decision.ready,
+	errors: decision.errors,
+	skipTokenization: decision.skipTokenization
+  });
+
+  // Extra debug: for SAQ-A-with-fallback, log the exact path chosen (hosted vs legacy)
+  try {
+	var _mode = (window.paysafePCIMode || (paysafe_params && paysafe_params.pci_compliance_mode) || '').toLowerCase();
+	if (_mode === 'saq_a_with_fallback' && window.paysafe_params && window.paysafe_params.debug) {
+	  var pathLabel;
+	  if (decision.flow === 'hosted_tokenize') {
+		pathLabel = 'HOSTED fields (iframe)';
+	  } else if (decision.flow === 'direct_tokenize') {
+		pathLabel = 'LEGACY card inputs (fallback)';
+	  } else if (decision.flow === 'saved_card') {
+		pathLabel = 'SAVED CARD (no browser tokenization)';
+	  } else {
+		pathLabel = 'OTHER (' + (decision.flow || 'unknown') + ')';
+	  }
+	  console.log(' [interceptWooEP] SAQ-A-with-fallback path:', pathLabel);
+	}
+  } catch (_e) {}
 		
 		// Skip tokenization if not needed
 		if (decision.skipTokenization) {
